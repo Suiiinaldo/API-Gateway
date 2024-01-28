@@ -7,18 +7,18 @@ class UserRepository extends CrudRepository {
         super(User);
     }
 
-    async findUser(emailOrUsername){
+    async findUser(email){
         const user = await User.findOne({
             where:{
                 [Op.or] :[
                     {
                         email : {
-                            [Op.eq] : emailOrUsername
+                            [Op.eq] : email
                         }
                     },
                     {
                         username : {
-                            [Op.eq] : emailOrUsername
+                            [Op.eq] : email
                         }
                     }
                 ]

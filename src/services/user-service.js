@@ -23,7 +23,7 @@ async function createUser(data){
 
 async function signin(data){
     try {
-        const user = await userRepository.findUser(data.emailOrUsername);
+        const user = await userRepository.findUser(data.email);
         if(!user){
             throw new AppError("No such user found with this email or username" , StatusCodes.NOT_FOUND);
         }
@@ -42,9 +42,35 @@ async function signin(data){
     }
 }
 
+async function isAuthenticated(token){
+    try {
+        if(!token){
+            throw new AppError("Missing JWT token", StatusCodes.BAD_REQUEST);
+        }
+        const reponse = Auth.verifyToken(token);
+        const user = await userRepository.get(reponse.id);
+        if(!user){
+            throw new AppError("No User found", StatusCodes.NOT_FOUND);
+        }
+        return user.id;
+    } catch (error) {
+        if(error instanceof AppError) throw error;
+        if(error.name == 'JsonWebTokenError'){
+            throw new AppError("Invalid JWT token", StatusCodes.BAD_REQUEST);
+        }
+        if(error.name == 'TokenExpiredError'){
+            throw new AppError("JWT token expired", StatusCodes.BAD_REQUEST);
+        }
+        console.log(error);
+        throw new AppError("Something went wrong", StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
 
 
 module.exports = {
     createUser,
-    signin
+    signin,
+    isAuthenticated,
+
 };

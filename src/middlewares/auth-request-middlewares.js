@@ -1,9 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
 const { ErrorResponse } = require("../utils/common");
 const AppError = require("../utils/errors/app-error");
+const { UserService } = require("../services");
 
 function validateAuthRequestSignIn(req,res,next){
-    if(!req.body.emailOrUsername){
+    if(!req.body.email){
         ErrorResponse.message = "Something went wrong while authenticating";
         ErrorResponse.error = new AppError([ "Email or usernmae not found in the incoming request" ],StatusCodes.BAD_REQUEST);
         return res
@@ -50,7 +51,23 @@ function validateAuthRequestSignUp(req,res,next){
     next();
 }
 
+async function checkAuth(req,res,next){
+    try {
+        const response = await UserService.isAuthenticated(req.headers[`x-access-token`]);
+        if(response){
+            req.user = response; //setting the user id in the req object
+            next();
+        }
+    } catch (error) {
+        return res
+                .status(error.statusCodes)
+                .json(error);
+    }
+}
+
 module.exports = {
     validateAuthRequestSignIn,
-    validateAuthRequestSignUp
+    validateAuthRequestSignUp,
+    checkAuth,
+
 };

@@ -32,7 +32,7 @@ async function signup(req,res){
 async function signin(req,res){
     try {
         const user = await UserService.signin({
-            emailOrUsername : req.body.emailOrUsername,
+            email : req.body.email,
             password : req.body.password,
         });
         SuccessResponse.data = user;
