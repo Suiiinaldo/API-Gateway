@@ -29,7 +29,25 @@ async function signup(req,res){
     }
 }
 
+async function signin(req,res){
+    try {
+        const user = await UserService.signin({
+            emailOrUsername : req.body.emailOrUsername,
+            password : req.body.password,
+        });
+        SuccessResponse.data = user;
+        return res
+                .status(StatusCodes.CREATED)
+                .json(SuccessResponse);   
+    } catch (error) {
+        ErrorResponse.error = error;
+        return res
+                .status(error.statusCodes)
+                .json(ErrorResponse);
+    }
+}
+
 module.exports = {
     signup,
-
+    signin,
 }
