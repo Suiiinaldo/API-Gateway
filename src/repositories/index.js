@@ -1,3 +1,4 @@
 module.exports = {
-    UserRepositorty: require("./user-repository"),
+    UserRepository: require("./user-repository"),
+    RoleRepository: require("./role-repository"),
 };

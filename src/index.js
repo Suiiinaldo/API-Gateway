@@ -14,30 +14,30 @@ const limiter = rateLimit({
 })
 
 
+
 app.use('/flightsService', createProxyMiddleware({ 
-    target: ServerConfig.FLIGHTS_URL, 
-    changeOrigin: true,
-    pathRewrite: { 
-      '^/flightsService' : '/'
-    }
+  target: ServerConfig.FLIGHTS_URL, 
+  changeOrigin: true,
+  pathRewrite: { 
+    '^/flightsService' : '/'
+  }
 }));
 
 
 app.use('/bookingService', createProxyMiddleware({ 
-    target: ServerConfig.BOOKING_URL, 
-    changeOrigin: true,
-    pathRewrite: { 
-      '^/bookingService' : '/'
-    }
+  target: ServerConfig.BOOKING_URL, 
+  changeOrigin: true,
+  pathRewrite: { 
+    '^/bookingService' : '/'
+  }
 }));
 
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.use(limiter);
-
 app.use("/api", apiRoutes);
+app.use(limiter);
 
 app.listen(ServerConfig.PORT, () => {
   console.log(`Successfully started the server on PORT : ${ServerConfig.PORT}`);
